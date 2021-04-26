@@ -2,7 +2,7 @@
   "id": "3de4e752-5e10-4bd0-8b97-4e2973551a46",
   "name": "TFB Advanced Warehouse Shipments",
   "publisher": "TFB Trading",
-  "version": "17.0.2.6",
+  "version": "18.0.0.0",
   "brief": "Additional functional related to warehouse shipments",
   "description": "",
   "privacyStatement": "",
@@ -13,13 +13,13 @@
   "suppressWarnings": ["AL0432","AA0072","AA0217"],
   "features":["TranslationFile"],
   "propagateDependencies": true,
-  "platform": "17.0.0.0",
-  "application": "17.1.0.0",
+  "platform": "18.0.0.0",
+  "application": "18.0.0.0",
   "dependencies": [{
     "id": "e4b4c5c6-109a-4977-8893-f1502da124f5",
     "name": "TFB Core Extension",
     "publisher": "TFB Trading",
-    "version": "17.0.0.0"
+    "version": "18.0.0.0"
   }
 ],
   "screenshots": [],
@@ -32,6 +32,6 @@
   "contextSensitiveHelpUrl": "https://WarehouseShipment-NG.com/help/",
   "showMyCode": true,
   "target": "Cloud",
-  "runtime": "6.0",
+  "runtime": "7.0",
   "supportedLocales": ["en-AU"]
 }

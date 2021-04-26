@@ -17,6 +17,7 @@ codeunit 50600 "TFB Whse. Ship. Notify"
 
 
         CustCalendarChange: Array[2] of Record "Customized Calendar Change";
+        Location: Record Location;
         Item: Record Item;
         WhseLines: Record "Warehouse Shipment Line";
         OrderLine: Record "Sales Line";
@@ -32,7 +33,6 @@ codeunit 50600 "TFB Whse. Ship. Notify"
         CommentBuilder: TextBuilder;
         ReferenceBuilder: TextBuilder;
         LineBuilder: TextBuilder;
-        Location: Record Location;
 
 
 
@@ -222,7 +222,7 @@ codeunit 50600 "TFB Whse. Ship. Notify"
         EmailMessage: CodeUnit "Email Message";
         EmailScenario: Enum "Email Scenario";
         EmailID: Text;
-        GeneratedContent: Text;
+
         Recipients: List of [Text];
 
         HTMLBuilder: TextBuilder;

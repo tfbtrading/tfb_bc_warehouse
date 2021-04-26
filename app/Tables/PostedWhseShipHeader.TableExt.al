@@ -80,6 +80,7 @@ tableextension 50612 "TFB Posted Whse. Ship. Header" extends "Posted Whse. Shipm
 
     }
 
+
     local procedure UpdateShipmentHeaderDetails()
 
     var

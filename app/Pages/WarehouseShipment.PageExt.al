@@ -299,14 +299,14 @@ pageextension 50603 "TFB Warehouse Shipment" extends "Warehouse Shipment" //7335
         WhseLine.SetRange("Source Document", WhseLine."Source Document"::"Sales Order");
 
         If WhseLine.FindSet(false, false) then
-            repeat begin
+            repeat
 
                 If SalesOrder.Get(SalesOrder."Document Type"::Order, WhseLine."Source No.") then
                     If SalesOrder."TFB Instructions" <> Rec."TFB Instructions" then
                         Exit(true);
 
 
-            end until WhseLine.Next = 0
+            until WhseLine.Next() = 0
 
         else
             Exit(false);

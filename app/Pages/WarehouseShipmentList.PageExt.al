@@ -257,19 +257,21 @@ pageextension 50606 "TFB Warehouse Shipment List" extends "Warehouse Shipment Li
 
     local procedure ReadExcelSheet()
     var
-        FileMgt: Codeunit "File Management";
-        IStream: InStream;
-        FromFile: Text[100];
+        FileManagement: Codeunit "File Management";
+        TempBlob: CodeUnit "Temp Blob";
+        InStream: InStream;
+        FromFile: Text;
     begin
-        UploadIntoStream(UploadExcelMsg, '', '', FromFile, IStream);
-        if FromFile <> '' then begin
-            FileName := FileMgt.GetFileName(FromFile);
-            SheetName := TempExcelBuffer.SelectSheetsNameStream(IStream);
-        end else
+        If FileManagement.BLOBImportWithFilter(TempBlob, UploadExcelMsg, FromFile, '', 'xlsx') <> '' then begin
+            TempBlob.CreateInStream(InStream);
+            SheetName := CopyStr(TempExcelBuffer.SelectSheetsNameStream(InStream), 1, 100);
+        end
+        else
             Error(NoFileFoundMsg);
+
         TempExcelBuffer.Reset();
         TempExcelBuffer.DeleteAll();
-        TempExcelBuffer.OpenBookStream(IStream, SheetName);
+        TempExcelBuffer.OpenBookStream(InStream, SheetName);
         TempExcelBuffer.ReadSheet();
     end;
 
@@ -278,22 +280,20 @@ pageextension 50606 "TFB Warehouse Shipment List" extends "Warehouse Shipment Li
     var
         WhseShipment: Record "Warehouse Shipment Header";
         RowNo: Integer;
-        ColNo: Integer;
-        LineNo: Integer;
+
         ExcelLineRef: Code[20];
-        Excel3PLRef: Code[20];
-        ExcelLineWeight: Decimal;
+
         MaxRowNo: Integer;
     begin
         RowNo := 0;
-        ColNo := 0;
+
         MaxRowNo := 0;
-        LineNo := 0;
+
 
         TempExcelBuffer.Reset();
-        if TempExcelBuffer.FindLast() then begin
+        if TempExcelBuffer.FindLast() then
             MaxRowNo := TempExcelBuffer."Row No.";
-        end;
+
 
         for RowNo := 2 to MaxRowNo do begin
             Evaluate(ExcelLineRef, GetValueAtCell(RowNo, 3));
@@ -313,7 +313,7 @@ pageextension 50606 "TFB Warehouse Shipment List" extends "Warehouse Shipment Li
 
 
         end;
-        Message(ExcelImportSucess);
+        Message(ExcelImportSucessMsg);
         CurrPage.Update();
     end;
 
@@ -334,21 +334,20 @@ pageextension 50606 "TFB Warehouse Shipment List" extends "Warehouse Shipment Li
     var
 
     begin
-        TrackingOkayVar := not WhsCU.CheckOrderItemTrackingIssueExists(Rec."No.");
+        TrackingOkayVar := not WhsShipMgmt.CheckOrderItemTrackingIssueExists(Rec."No.");
 
-        SentToWarehouseVar := WhsCU.CheckIfAlreadySent(rec);
+        SentToWarehouseVar := WhsShipMgmt.CheckIfAlreadySent(rec);
     end;
 
     var
-        FileName: Text[100];
-        SheetName: Text[100];
 
         TempExcelBuffer: Record "Excel Buffer" temporary;
+        WhsShipMgmt: CodeUnit "TFB Whs. Ship. Mgmt";
+        SheetName: Text[100];
+
         UploadExcelMsg: Label 'Please Choose the Excel file.';
         NoFileFoundMsg: Label 'No Excel file found!';
-        BatchISBlankMsg: Label 'Batch name is blank';
-        ExcelImportSucess: Label 'Excel is successfully imported.';
-        WhsCU: CodeUnit "TFB Whs. Ship. Mgmt";
+        ExcelImportSucessMsg: Label 'Excel is successfully imported.';
         TrackingOkayVar: Boolean;
         SentToWarehouseVar: Boolean;
 

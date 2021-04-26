@@ -416,28 +416,19 @@ codeunit 50602 "TFB Whs. Ship. Mgmt"
 
         LocationTable: Record Location;
         RepSelWhse: Record "Report Selection Warehouse";
-        //SMTPMailSetup: Record "SMTP Mail Setup";
+        CompanyInfo: Record "Company Information";
         Message: CodeUnit "Email Message";
         Email: CodeUnit Email;
-        CompanyInfo: Record "Company Information";
-        // SMTPMail: CodeUnit "SMTP Mail";
         TempBlobCU: CodeUnit "Temp Blob";
-        EmailRecordRef: RecordRef;
-        VarEmailRecordRef: RecordRef;
+        EmailRecordRef, VarEmailRecordRef : RecordRef;
         FieldRefVar: FieldRef;
-        //Works with TempBlob table to transfer file for sending
         IStream: InStream;
         OStream: OutStream;
+        EmailID, XmlParameters : Text;
 
-        //Email address to end to
-        EmailID: Text;
-        XmlParameters: Text;
-
-        //TextBuilders to generate FileName and Other Details
-        FileNameBuilder: TextBuilder;
-        SubjectNameBuilder: TextBuilder;
+        FileNameBuilder, SubjectNameBuilder : TextBuilder;
         Recipients: List of [Text];
-    // ParameterBuilder: TextBuilder;
+
 
     begin
 
@@ -447,8 +438,6 @@ codeunit 50602 "TFB Whs. Ship. Mgmt"
         If CheckOrderItemTrackingIssueExists(WhseShipment."No.") then
             If not Dialog.Confirm('Item tracking details have not been entered. Are you sure?', true) then
                 exit;
-
-
 
         CompanyInfo.Get();
 
@@ -488,7 +477,7 @@ codeunit 50602 "TFB Whs. Ship. Mgmt"
                 Recipients.Add(EmailID);
 
                 Message.Create(Recipients, SubjectNameBuilder.ToText(), GenerateEmailContent(WhseShipment), true);
-                Message.AddAttachment(FileNameBuilder.ToText(), 'application/pdf', IStream);
+                Message.AddAttachment(CopyStr(FileNameBuilder.ToText(), 1, 250), 'application/pdf', IStream);
 
                 Email.Enqueue(Message, Enum::"Email Scenario"::Logistics);
                 WriteToCommLog(WhseShipment);
@@ -502,12 +491,12 @@ codeunit 50602 "TFB Whs. Ship. Mgmt"
     local procedure GenerateEmailContent(WhseShipment: Record "Warehouse Shipment Header"): Text
 
     var
+        TFBCommonLibrary: CodeUnit "TFB Common Library";
         HTMLBuilder: TextBuilder;
-        MgmtCU: CodeUnit "TFB Common Library";
 
     begin
 
-        HTMLBuilder.Append(MgmtCU.GetHTMLTemplateActive('Warehouse Shipment', 'Instructions to ship goods'));
+        HTMLBuilder.Append(TFBCommonLibrary.GetHTMLTemplateActive('Warehouse Shipment', 'Instructions to ship goods'));
 
         HTMLBuilder.Replace('%{ExplanationCaption}', 'Notification type');
         HTMLBuilder.Replace('%{ExplanationValue}', 'Warehouse Pick and Pack Instructions');

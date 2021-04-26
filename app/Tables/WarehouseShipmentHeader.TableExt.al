@@ -124,12 +124,12 @@ tableextension 50601 "TFB Warehouse Shipment Header" extends "Warehouse Shipment
         Line.SetRange("No.", Rec."No.");
         Line.SetLoadFields("Qty. to Ship (Base)", "Item No.");
         If Line.FindSet(false, false) then
-            repeat begin
+            repeat 
 
                 If Item.Get(Line."Item No.") then
                     Weight += Line."Qty. to Ship (Base)" * Item."Net Weight";
 
-            end until Line.Next() = 0;
+            until Line.Next() = 0;
 
         Exit(Weight);
 
