@@ -258,16 +258,18 @@ pageextension 50606 "TFB Warehouse Shipment List" extends "Warehouse Shipment Li
     local procedure ReadExcelSheet()
     var
         FileManagement: Codeunit "File Management";
+        ExtFilterTxt: Label 'xlsx';
+        FileFilterTxt: Label 'All files (*.xlsx)|*.xlsx';
+        UploadExcelMsg: Label 'Choose file to upload';
         TempBlob: CodeUnit "Temp Blob";
         InStream: InStream;
         FromFile: Text;
+        SheetName: Text;
     begin
-        If FileManagement.BLOBImportWithFilter(TempBlob, UploadExcelMsg, FromFile, '', 'xlsx') <> '' then begin
-            TempBlob.CreateInStream(InStream);
-            SheetName := CopyStr(TempExcelBuffer.SelectSheetsNameStream(InStream), 1, 100);
-        end
-        else
-            Error(NoFileFoundMsg);
+        FileManagement.BLOBImportWithFilter(TempBlob, UploadExcelMsg, '', FileFilterTxt, ExtFilterTxt);
+        If not TempBlob.HasValue() then exit;
+        TempBlob.CreateInStream(InStream);
+        SheetName := CopyStr(TempExcelBuffer.SelectSheetsNameStream(InStream), 1, 100);
 
         TempExcelBuffer.Reset();
         TempExcelBuffer.DeleteAll();
