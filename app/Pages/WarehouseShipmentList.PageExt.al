@@ -37,7 +37,16 @@ pageextension 50606 "TFB Warehouse Shipment List" extends "Warehouse Shipment Li
                 ToolTip = 'Specifies destination ship-to location';
             }
 
+
         }
+
+
+        modify("Location Code")
+        {
+            Visible = true;
+        }
+        movebefore("TFB Destination Type"; "Location Code")
+
 
         addafter(Status)
         {
