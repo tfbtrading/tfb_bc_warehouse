@@ -564,9 +564,16 @@ codeunit 50602 "TFB Whs. Ship. Mgmt"
     var
         SalesLine: Record "Sales Line";
         TransferLine: Record "Transfer Line";
+        Item: Record Item;
+        ItemTracking: Record "Item Tracking Code";
         RecRef: RecordRef;
         QtyTracked: Decimal;
     begin
+
+        Item.Get(Line."Item No.");
+        If not ItemTracking.Get(Item."Item Tracking Code") then exit(true);
+
+        If not ItemTracking."Lot Specific Tracking" then exit(true);
 
         case Line."Source Document" of
             Line."Source Document"::"Sales Order":
